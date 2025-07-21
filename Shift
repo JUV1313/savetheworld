@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Echoes of the Divided Land</title>
+  
+  <!-- Google Fonts - Assistant -->
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Assistant', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      color: #f0f0f0;
+      overflow: hidden;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Screen Container */
+    .screen {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      text-align: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Screen Visibility */
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Screen Backgrounds */
+    .intro-screen {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+    }
+
+    .perspective-screen {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+    }
+
+    .red-screen {
+      background: linear-gradient(135deg, #8b0000, #a0392a);
+    }
+
+    .blue-screen {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    }
+
+    .consequence-screen {
+      background: linear-gradient(135deg, #374151, #4b5563);
+    }
+
+    .elder-screen {
+      background: linear-gradient(135deg, #92400e, #b45309);
+    }
+
+    /* Typography */
+    h1 {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 300;
+      margin-bottom: 1.5rem;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+      letter-spacing: 0.02em;
+    }
+
+    .intro-text {
+      font-size: clamp(1.1rem, 4vw, 1.4rem);
+      line-height: 1.7;
+      max-width: 600px;
+      margin-bottom: 2rem;
+      font-style: italic;
+      font-weight: 300;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+    }
+
+    .story-text {
+      font-size: clamp(1rem, 3.5vw, 1.3rem);
+      line-height: 1.8;
+      max-width: 700px;
+      margin-bottom: 2.5rem;
+      font-weight: 400;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+    }
+
+    .consequence-text {
+      font-size: clamp(1.2rem, 4.5vw, 1.8rem);
+      line-height: 1.6;
+      max-width: 650px;
+      margin: 0 auto;
+      font-style: italic;
+      font-weight: 300;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+    }
+
+    .elder-message {
+      font-size: clamp(1.1rem, 4vw, 1.6rem);
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      font-style: italic;
+      font-weight: 300;
+      color: #fbbf24;
+      max-width: 600px;
+    }
+
+    /* Buttons */
+    .btn {
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: 'Assistant', sans-serif;
+      font-weight: 500;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      touch-action: manipulation;
+    }
+
+    .btn:hover, .btn:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    /* Continue Button */
+    .continue-btn {
+      background: rgba(255,255,255,0.15);
+      border: 2px solid rgba(255,255,255,0.3);
+      color: white;
+      padding: 15px 30px;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      margin-top: 1rem;
+    }
+
+    /* Perspective Buttons Container */
+    .perspective-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 2rem;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .perspective-btn {
+      padding: 20px 25px;
+      font-size: clamp(1.1rem, 4vw, 1.4rem);
+      font-weight: 600;
+      border-radius: 16px;
+      width: 100%;
+    }
+
+    .red-perspective {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+
+    .blue-perspective {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+
+    /* Choice Buttons Container */
+    .choices-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .choice-btn {
+      padding: 18px 20px;
+      font-size: clamp(0.9rem, 3vw, 1.1rem);
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      color: white;
+      border-radius: 12px;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-weight: 400;
+    }
+
+    .choice-btn:hover, .choice-btn:focus {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .peaceful-choice {
+      background: rgba(34, 197, 94, 0.2);
+      border-color: rgba(34, 197, 94, 0.4);
+      margin-top: 10px;
+    }
+
+    .peaceful-choice:hover, .peaceful-choice:focus {
+      background: rgba(34, 197, 94, 0.3);
+    }
+
+    /* Final Buttons */
+    .final-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 100%;
+      max-width: 350px;
+    }
+
+    .final-btn {
+      padding: 15px 25px;
+      font-size: clamp(1rem, 3.5vw, 1.2rem);
+      font-weight: 600;
+      border-radius: 12px;
+      width: 100%;
+    }
+
+    .other-side-btn {
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+
+    .restart-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+
+    /* UI Indicators */
+    .turn-indicator {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+      opacity: 0.7;
+      font-weight: 400;
+    }
+
+    .countdown-container {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .countdown {
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      opacity: 0.8;
+      font-weight: 500;
+    }
+
+    .hold-instruction {
+      font-size: clamp(0.8rem, 2.5vw, 1rem);
+      opacity: 0.6;
+      font-weight: 300;
+      font-style: italic;
+    }
+
+    .elder-title {
+      font-size: clamp(1.8rem, 5vw, 2.5rem);
+      margin-bottom: 1.5rem;
+      color: #f59e0b;
+      font-weight: 400;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.6;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .fade-in-scale {
+      animation: fadeInScale 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    /* Responsive Design */
+    @media (min-width: 768px) {
+      .screen {
+        padding: 40px;
+      }
+
+      .perspective-buttons {
+        flex-direction: row;
+        max-width: 600px;
+        gap: 40px;
+      }
+
+      .choices-container {
+        max-width: 600px;
+      }
+
+      .final-buttons {
+        flex-direction: row;
+        max-width: 500px;
+      }
+    }
+
+    /* Touch-friendly adjustments */
+    @media (hover: none) and (pointer: coarse) {
+      .btn:hover {
+        transform: none;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Introduction Screen -->
+  <div class="screen intro-screen" id="introScreen">
+    <h1 class="fade-in-up">🌅 Echoes of the Divided Land</h1>
+    <div class="intro-text fade-in-up">
+      Long ago, the Reds and the Blues shared one land. Hoping for peace, they divided it in two… but the echoes of pain linger still.
+    </div>
+    <button class="btn continue-btn fade-in-scale" onclick="showPerspectiveSelect()">
+      Begin the Journey
+    </button>
+  </div>
+
+  <!-- Perspective Selection Screen -->
+  <div class="screen perspective-screen hidden" id="perspectiveScreen">
+    <h1 class="fade-in-up">Choose Your Path</h1>
+    <div class="intro-text fade-in-up">
+      Every story holds many truths. Through whose heart will you witness this tale?
+    </div>
+    <div class="perspective-buttons fade-in-scale">
+      <button class="btn perspective-btn red-perspective" onclick="selectPerspective('red')">
+        🔴 See the Red Story
+      </button>
+      <button class="btn perspective-btn blue-perspective" onclick="selectPerspective('blue')">
+        🔵 See the Blue Story
+      </button>
+    </div>
+  </div>
+
+  <!-- Game Screen -->
+  <div class="screen hidden" id="gameScreen">
+    <div class="turn-indicator" id="turnIndicator">Chapter 1 of 3</div>
+    <div class="story-text fade-in-up" id="storyText"></div>
+    <div class="choices-container fade-in-scale" id="choicesContainer"></div>
+  </div>
+
+  <!-- Consequence Screen -->
+  <div class="screen consequence-screen hidden" id="consequenceScreen">
+    <div class="consequence-text fade-in-up" id="consequenceText"></div>
+    <div class="countdown-container fade-in-scale">
+      <div class="countdown" id="countdown"></div>
+      <div class="hold-instruction pulse">Hold to pause</div>
+    </div>
+  </div>
+
+  <!-- Elder Screen -->
+  <div class="screen elder-screen hidden" id="elderScreen">
+    <div class="fade-in-up">
+      <div class="elder-title">🕊️ The Elder's Voice</div>
+      <div class="elder-message" id="elderMessage"></div>
+      <div class="final-buttons fade-in-scale">
+        <button class="btn final-btn other-side-btn" onclick="tryOtherSide()">
+          👁️ See Through Other Eyes
+        </button>
+        <button class="btn final-btn restart-btn" onclick="restart()">
+          🌟 Begin Anew
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Game State
+    let currentPerspective = null;
+    let currentTurn = 1;
+    let totalTurns = 3;
+    let countdownInterval = null;
+    let isPaused = false;
+    let timeLeft = 8;
+
+    // Story Data
+    const storyData = {
+      red: {
+        screenClass: 'red-screen',
+        turns: [
+          {
+            story: "The Red hearts carried a dream - to build a home where their children could grow in safety, where their songs could echo freely. But when they approached the Blues with this vision, they were met with closed doors and shaking heads. 'This land is not yours to claim,' came the reply. How do the Red spirits respond to this breaking of hope?",
+            choices: [
+              "🔥 Declare the ancient right to this soil runs in Red blood",
+              "⚔️ Gather strength to take what words cannot secure",
+              "🚫 Turn away from all Blue voices forever",
+              "🤝 Seek to understand the fear behind their refusal"
+            ],
+            consequences: [
+              "The declaration spreads like wildfire through Red communities, but it also hardens Blue resolve into stone. Red children learn to speak of 'sacred birthright' with clenched fists, and the possibility of shared understanding grows more distant with each passionate word.",
+              "Weapons gather in hidden Red places, but fear gathers in Red hearts too. Mothers begin teaching their little ones the sound of danger instead of lullabies, and the peaceful homeland they dream of fades behind the shadow of coming storm.",
+              "The silence builds walls higher than any stone. Red communities find themselves cut off from healing centers and learning places, while Red elders watch their people suffer and wonder if pride has become more precious than their children's wellbeing.",
+              "A few Red voices call for patience and listening, but they are drowned by the roar of pain. In choosing the gentler path, these Reds find themselves strangers among their own people, their wisdom dismissed as weakness when strength seems the only language left."
+            ]
+          },
+          {
+            story: "Years of frustration crystallized into lightning strikes. Red fighters, driven by dreams deferred and promises broken, launched attacks that shattered Blue tranquility. Each strike was meant to carve a path toward home, but each victory seemed to birth new obstacles. How do the Reds justify this path of thorns?",
+            choices: [
+              "💥 Intensify the storms until Blue resistance crumbles",
+              "🎯 Strike at Blue leaders to shatter their will",
+              "📢 Call upon distant tribes to witness Red suffering",
+              "💭 Question whether lightning can build the home they seek"
+            ],
+            consequences: [
+              "Each escalation brings Blue thunder in return. Red neighborhoods that once knew the music of children now know only the wailing of sirens and the taste of ash. The homeland they fight for becomes harder to recognize with each passing season.",
+              "The targeted strikes create Blue martyrs and turn Blue grief into iron resolve. Red strategists realize too late that they have forged the very chains they sought to break, making future understanding seem impossible.",
+              "The world hears Red voices, but many turn away from the violence that carries them. Red diplomats find closed doors where open hands once waited, as distant tribes grow weary of a song that seems to know only minor keys.",
+              "The questions multiply like shadows at sunset: if their children inherit a land won through storm and lightning, will they remember how to tend gardens? Some Red families begin to wonder if true strength might require different kinds of courage."
+            ]
+          },
+          {
+            story: "The breaking point arrived like a crack of thunder. Red fighters pierced deep into Blue territory during a moment of Blue joy and celebration, taking civilians as the storm retreated to Red lands. The operation was hailed as brilliant victory, but it awakened a Blue tempest that would rain devastation upon Red homes, schools, and sanctuaries. How do the Reds face this darkest hour?",
+            choices: [
+              "🛡️ Shelter fighters among families and children",
+              "🔫 Stand and fight until the last Red heart beats",
+              "🌍 Demand the watching world intervene to save Red lives",
+              "🕊️ Consider what price victory truly asks of the soul"
+            ],
+            consequences: [
+              "Red fighters seek refuge among Red families, but Blue strikes cannot see the difference between warrior and child. Red parents hold their little ones as buildings shake, knowing that their own protectors may have painted targets on innocent backs.",
+              "The determination to fight unto death inspires some Red hearts, but Red mothers must bury their sons while Blue mothers do the same. The last Red standing may inherit only ashes and the endless enmity of their neighbors.",
+              "The world's gaze brings aid wrapped in judgment. Red leaders find themselves defending not just their cause but their methods, as international voices question whether noble ends can justify any means.",
+              "In the rubble of their neighborhoods, some Reds begin to whisper: if this is what victory looks like, what would defeat have brought? The civilians taken still remain in Red hands, but so do all the consequences that followed."
+            ]
+          }
+        ],
+        elderMessage: "Child of my blood, I have watched our people carry pain like a sacred flame for three generations. We have won battles and lost our children's laughter. The ones we hold are someone's children too, just as our children weep for those we have lost. We have guarded our wounds so carefully... but what if our grandchildren could inherit gardens instead of scars?"
+      },
+      blue: {
+        screenClass: 'blue-screen',
+        turns: [
+          {
+            story: "The Blues dreamed of order from chaos, a place where law could shelter all who dwelt within its embrace. But not all who lived in the land could accept this vision of structured peace. The Blues, believing in the righteousness of their design, asked those who could not join this new harmony to find their place beyond its borders. How do the Blues respond when some hearts refuse to leave?",
+            choices: [
+              "⚖️ Enforce the law's word without wavering",
+              "🏗️ Build the new order around those who remain",
+              "🚧 Raise barriers to separate willing from unwilling",
+              "👂 Listen deeply to why some hearts cannot accept this way"
+            ],
+            consequences: [
+              "The law is enforced with Blue hands and Blue hearts growing heavy. Blue officers return home to children asking why neighbors have vanished, and Blue parents find no gentle words to explain justice to eyes that have only witnessed loss.",
+              "The structured state rises around pockets of refusal, but Blue architects discover that building around wounds only makes them fester. The beautiful order they create bears the permanent scars of those who would not join the design.",
+              "The barriers rise strong and true, but Blue children grow knowing only walls where once there were horizons. They learn to fear what lies beyond rather than hope for what could be shared across the divide.",
+              "Blue ears hear stories of displacement and loss, but Blue minds wrestle with impossible equations. How do you balance justice with mercy when they seem to pull in opposite directions, and every choice leaves someone's heart bleeding?"
+            ]
+          },
+          {
+            story: "Waves of violence crashed against Blue shores like an endless storm. Each assault tested Blue resolve and claimed Blue lives, forcing them to defend not just their vision but their very right to exist. Sometimes, when the storm grew too fierce, they struck back at its source with calculated force. How do the Blues maintain their principles while under siege?",
+            choices: [
+              "🛡️ Build defenses so strong that no storm can penetrate",
+              "⚔️ Strike at storm clouds before they can gather",
+              "📊 Accept the losses as the price of remaining pure",
+              "🔄 Examine whether their actions helped summon the storm"
+            ],
+            consequences: [
+              "The defenses grow ever higher and more sophisticated, but Blue children learn to live in eternal twilight. They know safety but forget what trust feels like, growing up in a fortress that protects them from everything, including joy.",
+              "The preemptive strikes prevent some attacks but plant seeds for future storms. Blue generals discover that each successful operation creates new grievances, breeding the very enemies they sought to eliminate.",
+              "Blue hospitals overflow with the wounded and Blue cemeteries with the dead. Noble principles provide cold comfort to Blue families who pay the price for ideals that seem to demand endless sacrifice from those who believe in them.",
+              "The examination brings uncomfortable truths floating to the surface: that good intentions can wear masks of terrible consequence, that justice for some might mean injustice for others. Blue philosophers find no easy answers in their books."
+            ]
+          },
+          {
+            story: "The meadow celebration was meant to be pure light - Blue families gathering to honor their achievements and weave dreams of tomorrow. Then Red shadows emerged from the morning mist, shattering the peace with violence and dragging Blue civilians into darkness. The Blue response was swift as lightning and overwhelming as flood, raining force upon Red territories to reclaim their people. But now the watching world sees only Blue power, not Blue bleeding. How do the Blues bear this impossible burden?",
+            choices: [
+              "💪 Show no weakness until every stolen soul returns home",
+              "🌍 Explain to distant tribes why the response was necessary",
+              "⚡ Continue the storm until Red resistance is broken completely",
+              "💔 Acknowledge the innocent blood spilled on both sides"
+            ],
+            consequences: [
+              "Blue resolve crystallizes into something their ancestors might not recognize. The strength meant to protect becomes a cage that traps Blue hearts in permanent vigilance, never able to rest, never able to remember what peace felt like.",
+              "Blue voices grow hoarse trying to justify actions that speak louder than any words. The world sees the power but not the pain, and Blue diplomats learn that being understood is sometimes harder than being victorious.",
+              "Each operation brings tactical success wrapped in strategic isolation. Blue commanders win every battle while Blue leaders lose the war for hearts and minds, even among their own people who begin to question what they've become.",
+              "The acknowledgment brings no immediate relief, but it opens a door in Blue hearts that many thought had been sealed forever. In admitting the cost, some Blues find the first trembling step toward a different kind of strength."
+            ]
+          }
+        ],
+        elderMessage: "Young guardian of our people, I have stood watch through many seasons of storm and stillness. We built our nation to shelter the innocent, but our shelter has become a fortress that casts long shadows. The stolen ones still cry for home, and our people cry for the stolen ones. We have protected our present, but have we protected our future? Perhaps the strongest walls are the ones we never need to build."
+      }
+    };
+
+    // Screen Management Functions
+    function showPerspectiveSelect() {
+      hideAllScreens();
+      document.getElementById('perspectiveScreen').classList.remove('hidden');
+      addAnimationClasses('perspectiveScreen');
+    }
+
+    function selectPerspective(perspective) {
+      currentPerspective = perspective;
+      currentTurn = 1;
+      showGameScreen();
+    }
+
+    function showGameScreen() {
+      const gameScreen = document.getElementById('gameScreen');
+      const data = storyData[currentPerspective];
+      
+      gameScreen.className = `screen ${data.screenClass}`;
+      updateTurn();
+      
+      hideAllScreens();
+      gameScreen.classList.remove('hidden');
+      addAnimationClasses('gameScreen');
+    }
+
+    function updateTurn() {
+      const data = storyData[currentPerspective];
+      const turn = data.turns[currentTurn - 1];
+      
+      document.getElementById('turnIndicator').textContent = `Chapter ${currentTurn} of ${totalTurns}`;
+      document.getElementById('storyText').textContent = turn.story;
+      
+      const container = document.getElementById('choicesContainer');
+      container.innerHTML = '';
+      
+      turn.choices.forEach((choice, index) => {
+        const button = document.createElement('button');
+        button.className = `btn choice-btn ${index === 3 ? 'peaceful-choice' : ''}`;
+        button.textContent = choice;
+        button.onclick = () => makeChoice(index);
+        container.appendChild(button);
+      });
+    }
+
+    function makeChoice(choiceIndex) {
+      const turn = storyData[currentPerspective].turns[currentTurn - 1];
+      const consequence = turn.consequences[choiceIndex];
+      showConsequence(consequence);
+    }
+
+    function showConsequence(consequence) {
+      document.getElementById('consequenceText').textContent = consequence;
+      
+      hideAllScreens();
+      document.getElementById('consequenceScreen').classList.remove('hidden');
+      addAnimationClasses('consequenceScreen');
+      
+      startCountdown();
+    }
+
+    function showElderScreen() {
+      const elderMessage = storyData[currentPerspective].elderMessage;
+      document.getElementById('elderMessage').textContent = elderMessage;
+      
+      hideAllScreens();
+      document.getElementById('elderScreen').classList.remove('hidden');
+      addAnimationClasses('elderScreen');
+    }
+
+    function tryOtherSide() {
+      currentPerspective = currentPerspective === 'red' ? 'blue' : 'red';
+      currentTurn = 1;
+      showGameScreen();
+    }
+
+    function restart() {
+      currentPerspective = null;
+      currentTurn = 1;
+      clearInterval(countdownInterval);
+      
+      hideAllScreens();
+      document.getElementById('introScreen').classList.remove('hidden');
+      addAnimationClasses('introScreen');
+    }
+
+    function hideAllScreens() {
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.add('hidden');
+      });
+    }
+
+    function addAnimationClasses(screenId) {
+      setTimeout(() => {
+        const screen = document.getElementById(screenId);
+        screen.querySelectorAll('.fade-in-up').forEach(el => {
+          el.style.animation = 'none';
+          el.offsetHeight; // Trigger reflow
+          el.style.animation = null;
+        });
+        screen.querySelectorAll('.fade-in-scale').forEach(el => {
+          el.style.animation = 'none';
+          el.offsetHeight; // Trigger reflow
+          el.style.animation = null;
+        });
+      }, 50);
+    }
+
+    // Countdown and Pause Functionality
+    function startCountdown() {
+      timeLeft = 8;
+      isPaused = false;
+      updateCountdownDisplay();
+      
+      countdownInterval = setInterval(() => {
+        if (!isPaused) {
+          timeLeft--;
+          updateCountdownDisplay();
+          
+          if (timeLeft <= 0) {
+            clearInterval(countdownInterval);
+            proceedToNext();
+          }
+        }
+      }, 1000);
+      
+      // Set up pause/resume event listeners
+      setupPauseListeners();
+    }
+
+    function updateCountdownDisplay() {
+      document.getElementById('countdown').textContent = `${timeLeft}s`;
+    }
+
+    function setupPauseListeners() {
+      const consequenceScreen = document.getElementById('consequenceScreen');
+      
+      // Mouse events (desktop)
+      consequenceScreen.addEventListener('mousedown', pauseCountdown);
+      consequenceScreen.addEventListener('mouseup', resumeCountdown);
+      consequenceScreen.addEventListener('mouseleave', resumeCountdown);
+      
+      // Touch events (mobile)
+      consequenceScreen.addEventListener('touchstart', pauseCountdown);
+      consequenceScreen.addEventListener('touchend', resumeCountdown);
+      consequenceScreen.addEventListener('touchcancel', resumeCountdown);
+    }
+
+    function pauseCountdown(e) {
+      e.preventDefault();
+      isPaused = true;
+      document.querySelector('.hold-instruction').style.opacity = '1';
+      document.querySelector('.hold-instruction').style.color = '#fbbf24';
+    }
+
+    function resumeCountdown(e) {
+      e.preventDefault();
+      isPaused = false;
+      document.querySelector('.hold-instruction').style.opacity = '0.6';
+      document.querySelector('.hold-instruction').style.color = '';
+    }
+
+    function proceedToNext() {
+      if (currentTurn >= totalTurns) {
+        showElderScreen();
+      } else {
+        currentTurn++;
+        updateTurn();
+        hideAllScreens();
+        document.getElementById('gameScreen').classList.remove('hidden');
+        addAnimationClasses('gameScreen');
+      }
+    }
+
+    // Initialize the game
+    document.addEventListener('DOMContentLoaded', () => {
+      addAnimationClasses('introScreen');
+    });
+  </script>
+</body>
+</html>
